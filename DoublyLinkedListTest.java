@@ -36,49 +36,29 @@ public class DoublyLinkedListTest {
      }
 
     public void group() {
-    if (isEmpty()) {
-        return;
-    }
-
-    Node<E> firstNull = head;
-    while (firstNull != null && firstNull.getElement() != null) {
-        firstNull = firstNull.getNext();
-    }
-
-    if (firstNull == null) {
-        return; 
-    }
-
-    Node<E> groupTail = firstNull;
-    Node<E> cur = groupTail.getNext();
-
-    while (cur != null) {
-        Node<E> nextCur = cur.getNext(); 
-
-        if (cur.getElement() == null) {
-            Node<E> p = cur.getPrev();
-            Node<E> n = cur.getNext();
-
-            p.setNext(n);
-            if (n != null) {
-                n.setPrev(p);
-            } else {
-                tail = p;
-            }
-
-            Node<E> afterGroup = groupTail.getNext();
-            groupTail.setNext(cur);
-            cur.setPrev(groupTail);
-            cur.setNext(afterGroup);
-            if (afterGroup != null) {
-                afterGroup.setPrev(cur);
-            } else {
-                tail = cur; 
-
-            groupTail = cur; 
-        }
-
-        cur = nextCur; 
-    }
-}
+       Node<E> lastNull = header;
+       Node<E> current = header.getNext();
+   
+       while (current != trailer) {
+           Node<E> next = current.getNext();
+   
+           if (current.getElement() == null) {
+               if (current.getPrev() != lastNull) {
+                   current.getPrev().setNext(current.getNext());
+                   current.getNext().setPrev(current.getPrev());
+   
+                   Node<E> after = lastNull.getNext();
+   
+                   lastNull.setNext(current);
+                   current.setPrev(lastNull);
+                   current.setNext(after);
+                   after.setPrev(current);
+               }
+   
+               lastNull = current;
+           }
+   
+           current = next;
+       }
+   }
 }
