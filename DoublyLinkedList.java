@@ -115,6 +115,55 @@ public class DoublyLinkedList<E> {
     }
 
     public void group(){
-
+        if (isEmpty()) {
+            return;
+        }
+    
+        // Step 1: find the first null node
+        Node<E> firstNull = head;
+        while (firstNull != null && firstNull.getElement() != null) {
+            firstNull = firstNull.getNext();
+        }
+    
+        if (firstNull == null) {
+            return; // no nulls in the list, nothing to group
+        }
+    
+        // groupTail tracks the last node currently in the "null block"
+        Node<E> groupTail = firstNull;
+        Node<E> cur = groupTail.getNext();
+    
+        while (cur != null) {
+            Node<E> nextCur = cur.getNext(); // save before we unlink cur
+    
+            if (cur.getElement() == null) {
+                // --- unlink cur from its current position ---
+                Node<E> p = cur.getPrev();
+                Node<E> n = cur.getNext();
+    
+                p.setNext(n);
+                if (n != null) {
+                    n.setPrev(p);
+                } else {
+                    tail = p; // cur was the old tail
+                }
+    
+                // --- insert cur right after groupTail ---
+                Node<E> afterGroup = groupTail.getNext();
+                groupTail.setNext(cur);
+                cur.setPrev(groupTail);
+                cur.setNext(afterGroup);
+                if (afterGroup != null) {
+                    afterGroup.setPrev(cur);
+                } else {
+                    tail = cur; // cur becomes the new tail
+                }
+    
+                groupTail = cur; // extend the null block
+            }
+    
+            cur = nextCur; // continue from where we originally were
+            }
+        }
     }
 }
