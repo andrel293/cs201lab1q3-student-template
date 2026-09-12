@@ -35,34 +35,50 @@ public class DoublyLinkedListTest {
       System.out.println();
      }
 
-     public void group(DoublyLinkedList<E> dll){
+    public void group() {
+    if (isEmpty()) {
+        return;
+    }
 
-          if (dll.isEmpty()){
-               return;
-          }
+    Node<E> firstNull = head;
+    while (firstNull != null && firstNull.getElement() != null) {
+        firstNull = firstNull.getNext();
+    }
 
-          E nullPtr = head;
+    if (firstNull == null) {
+        return; 
+    }
 
-          while (nullPtr.getElement() != null){
-               nullPtr = nullPtr.getNext();
-          }
+    Node<E> groupTail = firstNull;
+    Node<E> cur = groupTail.getNext();
 
-          E nxtNull = nullPtr.getNext();
+    while (cur != null) {
+        Node<E> nextCur = cur.getNext(); 
 
-          while (nxtNull != null){
+        if (cur.getElement() == null) {
+            Node<E> p = cur.getPrev();
+            Node<E> n = cur.getNext();
 
-               if (nxtNull.getElement() == null){
-                    E prev = nxtNull.getPrev();
-                    E nxt = nxtNull.getNext();
-                    prev.setNext(nxt);
-               }
+            p.setNext(n);
+            if (n != null) {
+                n.setPrev(p);
+            } else {
+                tail = p;
+            }
 
-               nxtNull = nxtNull.getNext();
-               E prev = nxtNull.get
+            Node<E> afterGroup = groupTail.getNext();
+            groupTail.setNext(cur);
+            cur.setPrev(groupTail);
+            cur.setNext(afterGroup);
+            if (afterGroup != null) {
+                afterGroup.setPrev(cur);
+            } else {
+                tail = cur; 
 
-          }
+            groupTail = cur; 
+        }
 
-          return;
-
-     }
+        cur = nextCur; 
+    }
+}
 }
