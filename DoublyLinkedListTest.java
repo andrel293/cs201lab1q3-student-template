@@ -36,29 +36,57 @@ public class DoublyLinkedListTest {
      }
 
     public void group() {
-       Node<E> lastNull = header;
-       Node<E> current = header.getNext();
-   
-       while (current != trailer) {
-           Node<E> next = current.getNext();
-   
-           if (current.getElement() == null) {
-               if (current.getPrev() != lastNull) {
-                   current.getPrev().setNext(current.getNext());
-                   current.getNext().setPrev(current.getPrev());
-   
-                   Node<E> after = lastNull.getNext();
-   
-                   lastNull.setNext(current);
-                   current.setPrev(lastNull);
-                   current.setNext(after);
-                   after.setPrev(current);
-               }
-   
-               lastNull = current;
-           }
-   
-           current = next;
-       }
-   }
+       Node<E> firstNull = null;
+      Node<E> lastNull = null;
+      Node<E> firstValue = null;
+      Node<E> lastValue = null;
+      
+      while (current != trailer) {
+          Node<E> next = current.getNext();
+      
+          if (current.getElement() == null) {
+              if (firstNull == null) {
+                  firstNull = current;
+              } else {
+                  lastNull.setNext(current);
+                  current.setPrev(lastNull);
+              }
+              lastNull = current;
+          } else {
+              if (firstValue == null) {
+                  firstValue = current;
+              } else {
+                  lastValue.setNext(current);
+                  current.setPrev(lastValue);
+              }
+              lastValue = current;
+          }
+      
+          current = next;
+      }
+      
+      if (firstNull != null) {
+          header.setNext(firstNull);
+          firstNull.setPrev(header);
+      
+          if (firstValue != null) {
+              lastNull.setNext(firstValue);
+              firstValue.setPrev(lastNull);
+      
+              lastValue.setNext(trailer);
+              trailer.setPrev(lastValue);
+          } else {
+              lastNull.setNext(trailer);
+              trailer.setPrev(lastNull);
+          }
+      } else if (firstValue != null) {
+          header.setNext(firstValue);
+          firstValue.setPrev(header);
+      
+          lastValue.setNext(trailer);
+          trailer.setPrev(lastValue);
+      } else {
+          header.setNext(trailer);
+          trailer.setPrev(header);
+      }
 }
